@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+     <script>
+     $(document).ready(function () {
+  var trigger = $('.hamburger'),
+      overlay = $('.overlay'),
+     isClosed = false;
+
+    trigger.click(function () {
+      hamburger_cross();      
+    });
+
+    function hamburger_cross() {
+
+      if (isClosed == true) {          
+        overlay.hide();
+        trigger.removeClass('is-open');
+        trigger.addClass('is-closed');
+        isClosed = false;
+      } else {   
+        overlay.show();
+        trigger.removeClass('is-closed');
+        trigger.addClass('is-open');
+        isClosed = true;
+      }
+  }
+  
+  $('[data-toggle="offcanvas"]').click(function () {
+        $('#wrapper').toggleClass('toggled');
+  });  
+});
+     
+ </script>
+
+  <style> 
+
+h4 {
+    font-size: 1.25em;
+  
+    height: 2.2em;
+}
+img {
+     height:120px;
+     width:260px;
+}
+.author {
+    float: left;
+    font-weight: 900;
+    font-size: 0.65em;
+    height: 0.7em;
+    display:block;
+}
+.sectName{
+    
+        float: left;
+    font-weight: 1000;
+    font-size: 0.95em;
+    height: 0.8em;
+     display:block;
+}
+.timestamp {
+    float: left;
+  
+    font-weight: 800;
+    font-size: 0.65em;
+    height: 0.7em;
+    font-style:italic;
+     display:block;
+}
+.card {
+    box-shadow: 2px 0px 8px 0px rgba(0,0,0,0.2);
+    transition: 0.3s;
+    padding:15px 15px 25px 25px;
+    
+}
+
+.card:hover {
+    box-shadow: 2px 8px 16px 2px rgba(0,0,0,0.2);
+}
+
+
+</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<body >
+    
+
+        <div id="wrapper">
+        <div class="overlay">test</div>
+           
+             
+           
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+            <ul class="nav sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                       Quintype
+                    </a>
+                </li>
+                  <%@menuResults.each do |configKey,configVal|%>
+                 <%if configKey == "layout"
+                                    configVal.each do |objKey,objVal|
+                                       if objKey == "menu" 
+                                         objVal.each do |menu| %>
+                                            <%menu.each do |mKey,mVal|%>
+                                                  <%if mKey == "item-type"%>
+                                                       <% @itemType=mVal%>
+                                                   <%end%>
+                                                  <%if mKey == "section-slug"%>
+                                                       <% @sectionSlug=mVal%>
+                                                     <%end%>
+                                                   <% @fullPath="http://sketches.quintype.com/#{menu["item-type"]}/#{menu["section-slug"]}"%>
+                                                   
+                                                   <%if mKey == "title"%>
+                                                       <li>
+                                                        <a href="<%=@fullPath%>"> <%=@menuName=mVal%></a>
+                                                       </li>
+                                                    <%end%>
+                                             <%end%>
+                                         <% end%>
+                                        <%end%>
+                                   <% end%>
+                                <% end%>
+                	  <%end %>
+               
+                
+                
+            </ul>
+        </nav>
+        <!-- /#sidebar-wrapper -->
+
+   <!-- Page Content -->
+<div id="page-content-wrapper">
+   <div >
+        <button type="button" class="hamburger is-closed" data-toggle="offcanvas" >
+                <span class="hamb-top"> </span>
+    			<span class="hamb-middle"></span>
+				<span class="hamb-bottom"></span>
+				<span style="margin-left: 30px;padding:5px;font-size:3em" class="navbar-brand">Quintype</span>
+                
+				
+            </button>
+         
+</div>
+       
+<div class="container-fluid" >
+
+  <div class="row">
+        <% @results.each do |stories,details|%>
+                <% details.each do |detail| %> 
+                 <div  class="col-sm-3" id="detail">
+                        <% detail.each do |k,v| %>
+                              
+                             
+                                <%if k == "hero-image-s3-key"%>
+                                    <%source="http://quintype-01.imgix.net/"+v+"?auto=format&q=60&w=260&h=120&fm=pjpg" %>
+                                  <%= image_tag source  %>
+                                <% end%>
+                               
+                                
+                                <%if k == "sections"
+                                    v.each do |obj|
+                                        obj.each do |key,value| %>
+                                                <%if key == "name" 
+                                                    @sectName=value%>
+                                                <%end%>
+                                         <% end%>
+                                   <% end%>
+                                <% end%>
+
+                              
+                                 <% if k == "headline"
+                                     @headline=v %>
+                                 <% end%>
+                                <% if k == "author-name"
+                                    @author= v %>
+                                <% end%>
+                                <% if k == "published-at"
+                                    @published_at= v %>
+                                <% end%>
+                                <% if k == "slug"
+                                    @slug=v %>
+                                <% end%>
+                             <% end%>   
+                              <%  @sourceURL = "http://sketches.quintype.com/"+@slug%>
+                          <a href=" <%= @sourceURL%>">
+                  <div class="content">
+                  <h4>  <%= @headline%></h4>
+                   <div class="sectName" ><%= @sectName%></div><br/>
+                   <div class="author" ><%= @author%></div><br/>
+                   <div class="timestamp" id="timestmp"><%= Time.zone.at(@published_at/1000).to_formatted_s(:long)  %></div><br/>
+                   <br/>
+                   </a>
+                  </div>
+               </div>
+               
+                            
+             <% end%>
+               
+
+        <% end%>
+
+  </div>
+ </div>
+</div>
+</body>
